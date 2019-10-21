@@ -3,6 +3,7 @@ package vault
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/vault/api"
@@ -77,7 +78,10 @@ func namespaceRead(d *schema.ResourceData, meta interface{}) error {
 		return nil
 	}
 
+	strippedPath := strings.TrimRight(resp.Data["path"].(string), "/")
+
 	d.SetId(resp.Data["id"].(string))
+	d.Set("path", strippedPath)
 
 	return nil
 }

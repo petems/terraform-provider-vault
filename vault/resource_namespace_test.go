@@ -13,7 +13,11 @@ import (
 	"github.com/hashicorp/vault/api"
 )
 
-func TestNamespace_basic(t *testing.T) {
+type namespaceConfig struct {
+	path string
+}
+
+func TestAccNamespace_basic(t *testing.T) {
 
 	isEnterprise := os.Getenv("TF_ACC_ENTERPRISE")
 	if isEnterprise == "" {
