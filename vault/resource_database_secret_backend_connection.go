@@ -65,6 +65,11 @@ func databaseSecretBackendConnectionResource() *schema.Resource {
 				Description: "A map of sensitive data to pass to the endpoint. Useful for templated connection strings.",
 				Sensitive:   true,
 			},
+			"password_policy": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Password policy for the database.",
+			},
 
 			"elasticsearch": {
 				Type:        schema.TypeList,
@@ -545,6 +550,10 @@ func databaseSecretBackendConnectionCreate(d *schema.ResourceData, meta interfac
 		data["verify_connection"] = v.(bool)
 	}
 
+	if v, ok := d.GetOkExists("password_policy"); ok {
+		data["password_policy"] = v.(string)
+	}
+
 	if v, ok := d.GetOkExists("allowed_roles"); ok {
 		var roles []string
 		for _, role := range v.([]interface{}) {
@@ -715,6 +724,9 @@ func databaseSecretBackendConnectionRead(d *schema.ResourceData, meta interface{
 	if v, ok := resp.Data["verify_connection"]; ok {
 		d.Set("verify_connection", v.(bool))
 	}
+	if v, ok := resp.Data["password_policy"]; ok {
+		d.Set("password_policy", v.(string))
+	}
 
 	return nil
 }
@@ -734,6 +746,10 @@ func databaseSecretBackendConnectionUpdate(d *schema.ResourceData, meta interfac
 
 	if v, ok := d.GetOkExists("verify_connection"); ok {
 		data["verify_connection"] = v.(bool)
+	}
+
+	if v, ok := d.GetOkExists("password_policy"); ok {
+		data["password_policy"] = v.(string)
 	}
 
 	if v, ok := d.GetOkExists("allowed_roles"); ok {
